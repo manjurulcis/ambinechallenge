@@ -11,8 +11,12 @@ def hello_world():
 
 
 @app.route('/standing/<season>')
-def standing(season):
+def standing(season): 
+    if type(season) != 'int':
+        return 'Invalid season id'
+     
     df = pd.read_csv('data/game_data.csv')
     dataframe = pd.DataFrame(df)
     teams = dataloader.dataloader().get_season_state(season)
+    
     return json.dumps(teams)
