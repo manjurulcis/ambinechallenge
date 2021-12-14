@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import json
+from collections import OrderedDict
 
 class dataloader:
     
@@ -11,8 +13,27 @@ class dataloader:
         condition = self.teams['team_id'] == int(team_id)
         return self.teams[condition]
     
-    def get_season_state(self, season, team_id):
-        conditions = self.games['season'] == int(season) and self.games['tea']
-        team = self.teams[conditions]
-        print(np.unique(team.groupby('home_team_id'), axis=0))
-        return team
+    def get_season_state(self, season):
+        conditions = self.games['season'] == int(season)
+        seasongames = self.games[conditions]
+        seasongames = seasongames.to_json(orient='records')
+        teams = self.teams.to_json(orient='records')
+        
+        #return season teams
+        returnData = list()
+        for team in json.loads(teams):
+            teamGoals = dict()
+            teamGoals['name'] = team['teamName']
+            teamGoals['points'] = 0
+            for game in json.loads(seasongames):
+                if team['team_id'] == game['away_team_id'] and int(game['away_goals']) > int(game['home_goals']):
+                    teamGoals['points'] += 2
+                if team['team_id'] == game['home_team_id'] and int(game['away_goals']) < int(game['home_goals']):     
+                    teamGoals['points'] += 2
+                if team['team_id'] == game['home_team_id'] or team['team_id'] == game['away_team_id'] and game['type'] == 'P':     
+                    teamGoals['points'] += 1    
+                    
+            returnData.append(teamGoals)        
+                    
+        return returnData
+            
