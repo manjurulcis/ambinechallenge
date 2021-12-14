@@ -25,13 +25,31 @@ class dataloader:
             teamGoals = dict()
             teamGoals['name'] = team['teamName']
             teamGoals['points'] = 0
+            teamGoals['wins'] = 0
+            teamGoals['lossed'] = 0
+            teamGoals['total'] = 0
             for game in json.loads(seasongames):
-                if team['team_id'] == game['away_team_id'] and int(game['away_goals']) > int(game['home_goals']):
+                if team['team_id'] == game['away_team_id'] and int(game['away_goals']) > int(game['home_goals']) and game['type'] == 'R':
                     teamGoals['points'] += 2
-                if team['team_id'] == game['home_team_id'] and int(game['away_goals']) < int(game['home_goals']):     
+                    teamGoals['wins'] += 1
+                    teamGoals['total'] += 1
+                    
+                elif team['team_id'] == game['home_team_id'] and int(game['away_goals']) < int(game['home_goals']) and game['type'] == 'R':     
                     teamGoals['points'] += 2
-                if team['team_id'] == game['home_team_id'] or team['team_id'] == game['away_team_id'] and game['type'] == 'P':     
-                    teamGoals['points'] += 1    
+                    teamGoals['wins'] += 1
+                    teamGoals['total'] += 1
+                    
+                elif team['team_id'] == game['away_team_id'] and int(game['away_goals']) < int(game['home_goals']) and game['type'] == 'R':
+                    teamGoals['lossed'] += 1
+                    teamGoals['total'] += 1
+                    
+                elif team['team_id'] == game['home_team_id'] and int(game['away_goals']) > int(game['home_goals']) and game['type'] == 'R':     
+                    teamGoals['lossed'] += 1
+                    teamGoals['total'] += 1    
+                    
+                elif team['team_id'] == game['home_team_id'] or team['team_id'] == game['away_team_id'] and game['type'] == 'P':     
+                    teamGoals['points'] += 1
+                    teamGoals['total'] += 1                          
                     
             returnData.append(teamGoals)        
                     
