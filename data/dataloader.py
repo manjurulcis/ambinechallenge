@@ -47,7 +47,11 @@ class dataloader:
                     teamGoals['lossed'] += 1
                     teamGoals['total'] += 1    
                     
-                elif team['team_id'] == game['home_team_id'] or team['team_id'] == game['away_team_id'] and game['type'] == 'P':     
+                elif team['team_id'] == game['home_team_id'] and game['type'] == 'P' and int(game['home_goals']) < int(game['away_goals']):     
+                    teamGoals['points'] += 1
+                    teamGoals['total'] += 1     
+                    
+                elif team['team_id'] == game['away_team_id'] and game['type'] == 'P' and int(game['home_goals']) > int(game['away_goals']):     
                     teamGoals['points'] += 1
                     teamGoals['total'] += 1                          
                     
