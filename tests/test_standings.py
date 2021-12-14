@@ -12,6 +12,6 @@ def test_returns_200_OK():
 
 def test_returns_valid_season():
     with app.test_client() as client:
-        response = client.get('/standing/4242342')
+        response = client.get('/standing/4242342sdfsd')
         assert response.status_code == 200
         assert response.get_data(as_text=True) == 'Invalid season id'
